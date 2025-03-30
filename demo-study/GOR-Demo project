@@ -1,0 +1,296 @@
+
+Layout
+-------------------------------------------------------------------
+Project Name:
+GOR Demo Project
+
+
+
+Project Color:
+#0f314e
+
+
+In-App-texts
+-------------------------------------------------------------------
+
+Login Text:
+Welcome to the demo study of our GESIS AppKit Workshop @ GOR2025! Please enter your participant code below to participate in the demo study. Take special care that there are no trailing spaces when you copy-paste the code and keep in mind that the codes are case-sensitive. You can either use a personal participant code to log in or use the general login code "GORWORKSHOP". If you have any issues with logging in, just raise your hand and we'll come and try to help you. Have fun exploring the AppKit!
+
+
+
+Home Text:
+This is the home screen of the GESIS SMART App! You can see the project logo on the top left and the settings menu at the top right (click the three dots). On the bottom left, you can always check your participant code and make a screenshot of the code. It's always a good idea to tell your participants to screenshot this code if the logged in with a general login code, so they can log back in in case that they get logged out due to any reason. On the bottom right you can see the privacy and help page where participants have access to the privacy text specified by you and your contact for trouble shooting. In the center is the inbox where new surveys can be found.
+
+
+
+Inbox title:
+Survey Inbox
+
+
+
+Inbox Text:
+You can find all your new and answered surveys here.
+
+
+Privacy
+--------------------------------------------------------------------
+
+Privacy Text:
+
+Privacy and Data Protection Information for the [Study Name]
+
+Introduction
+
+Thank you for participating in the [Study Name] conducted by [Research Institution]. Your privacy and the protection of your personal data are of utmost importance to us. This document outlines how we collect, use, and safeguard your data in compliance with the General Data Protection Regulation (GDPR).​
+
+Data Controller
+
+The data controller responsible for processing your data is:​
+
+[Research Institution]
+[Address]
+[Contact Information]
+Purpose of Data Collection
+
+The purpose of this study is to [briefly describe the study's objectives]. To achieve this, we will collect data through surveys and, with your consent, may access certain sensor data from your smartphone.​
+
+Data Collection Methods
+
+We will use the GESIS AppKit to administer surveys and collect data. The GESIS AppKit comprises an interactive dashboard for study design and participant management, as well as the GESIS SMART app, which you will install on your smartphone. This app is available for both Android and iOS devices. ​
+
+Types of Data Collected
+
+Survey Responses: Your answers to questionnaires administered through the GESIS SMART app.​
+Sensor Data (if applicable): With your explicit consent, we may collect data from certain smartphone sensors, such as GPS location, accelerometer, or gyroscope data.​
+Legal Basis for Data Processing
+
+The processing of your personal data is based on your informed consent, in accordance with Article 6(1)(a) of the GDPR. You have the right to withdraw your consent at any time without providing a reason.​
+
+Data Storage and Security
+
+Your data will be temporarily stored on secure servers operated by GESIS – Leibniz Institute for the Social Sciences in Germany. All data transmissions are encrypted to protect against unauthorized access. As a researcher, you are responsible for exporting and securely storing the collected data promptly.
+
+Data Retention and Deletion
+
+The collected data will be stored for a period of 12 months from the date of collection, unless you request its deletion earlier. After this period, your data will be securely deleted. ​
+
+Your Rights
+
+Under the GDPR, you have the following rights regarding your personal data:
+Right to Access: You can request a copy of the data we have collected from you.​
+Right to Rectification: You can request correction of any inaccurate or incomplete data.​
+Right to Erasure: You can request the deletion of your data.​
+Right to Restrict Processing: You can request that we limit the processing of your data.​
+Right to Data Portability: You can request that your data be transferred to another organization or directly to you.​
+Right to Object: You can object to the processing of your data under certain conditions.​
+To exercise any of these rights, please contact us at [Contact Information].​
+
+For more information about data protection at GESIS, please visit our Data Protection page.​
+
+
+
+Further Information:
+
+Contact Information
+
+If you have any questions or concerns about this privacy notice or how your data is being handled, please contact:
+
+[Research Institution]
+[Address]
+[Email Address]
+[Phone Number]
+
+
+Create
+-------------------------------------------------------------------------
+
+Item-type:
+Container
+
+Variable Name:
+intro-container
+
+-----
+
+Item Type:
+Information
+
+Variable Name:
+info1
+
+Content:
+This is an information item. It simply displays texts to the participants.
+
+------
+
+Item Type:
+Free text
+
+Variable Name:
+freetext1
+
+Text:
+This is a freetext item
+
+No-response options:
+No answer
+
+------
+
+Item Type:
+Likert-Scale
+
+Variable Name:
+likert1
+
+Text:
+This is a Likert scale item
+
+Minimum:
+0
+
+Maximum:
+7
+
+Scale label (left):
+Never
+
+Scale label (right):
+Always
+
+No-response options:
+No answer
+
+---------
+
+Item Type:
+Multiple-Choice
+
+Variable Name:
+multiple-choice1
+
+Text:
+This is a multiple choice item
+
+Options:
+Choice1
+Choice2
+Choice3
+
+No-response options:
+No answer
+
+------
+
+Item Type:
+Photo Upload
+
+Variable Name:
+photo1
+
+Text:
+This is a photo upload item
+
+Options:
+Choice1
+Choice2
+Choice3
+
+No-response options:
+Skip photo upload
+
+------
+
+Item Type:
+Continue-Stop
+
+Variable Name:
+continue-stop1
+
+Text:
+This is an experimental branching question. Currently, it MUST be the last item in the questionnaire and no deep branching is possible yet. Select YES to Continue, select NO to stop.
+
+------
+
+Item Type:
+External Survey
+
+Variable Name:
+ext-link1
+
+Description:
+This item can be used to link your app-studies with other online surveys. Simply copy-paste the reception URL from the external survey tool you are using and participants will be forwarded to your survey there while there personal ID is handed over as an URL-parameter.
+
+URL:
+https://appkittesting.limesurvey.net/195835?lang=en&appkit_id=
+
+No-response options:
+Skip external survey
+
+
+
+Send
+----------------------------------------------------------------
+
+
+Title:
+Intro-survey
+
+Item:
+intro-container
+
+General Login Codes:
+All participants
+
+Schedule:
+When participants sign into the app
+
+--------
+
+Title:
+Daily Survey
+
+Item:
+intro-container
+
+General Login Codes:
+All participants
+
+Schedule:
+At specific moment(s) in time
+
+Starts:
+...X days after signup
+
+Number of Days X:
+1
+
+Notifies:
+...at multiple random times
+
+Number of times:
+3
+
+Minimum Ditance:
+120
+
+Not Before:
+08:00 AM
+
+Not after:
+10:00 PM
+
+Repeats:
+...every Y-th day
+
+Repeat interval (Y):
+1
+
+Ends:
+...after Z repetitions
+
+Number of repetitions (Z):
+7
+
+-------
+
