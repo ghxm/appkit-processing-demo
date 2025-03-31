@@ -273,7 +273,7 @@ convert_char_to_logical <- function(df) {
 
 # Function to read an AppKit survey (CSV + SPS) from a directory,
 # convert eligible character columns to logical, and apply variable and value labels.
-read_appkit_survey <- function(survey_directory) {
+read_appkit_survey <- function(survey_directory, na_value=NULL) {
   # Find the CSV file
   csv_files <- list.files(survey_directory, pattern = "\\.csv$", full.names = TRUE)
 
@@ -287,6 +287,26 @@ read_appkit_survey <- function(survey_directory) {
 
   # Read the CSV file
   survey_data <- read.csv(survey_csv_path, stringsAsFactors = FALSE, sep = ";")
+  
+  
+  # Set NAs for the na_value if it is set
+  # Then apply the NA conversion with type checking
+  if (!is.null(na_value)) {
+      survey_data <- survey_data %>%
+          mutate(across(everything(), ~{
+              # Check the type of the current column
+              if (is.numeric(.)) {
+                  # For numeric columns, use na_value directly
+                  na_if(., na_value)
+              } else if (is.character(.) || is.factor(.)) {
+                  # For character/factor columns, convert na_value to character
+                  na_if(., as.character(na_value))
+              } else {
+                  # For other types, keep as is
+                  .
+              }
+          }))
+  }
 
   # Convert 'true'/'TRUE' and 'false'/'FALSE' strings to logical values
   survey_data <- convert_char_to_logical(survey_data)
@@ -308,7 +328,7 @@ read_appkit_survey <- function(survey_directory) {
 
 # Function to read multiple surveys from a parent directory.
 # Each subdirectory is assumed to contain one survey.
-read_appkit_surveys <- function(surveys_directory) {
+read_appkit_surveys <- function(surveys_directory, na_value=-1) {
   survey_directories <- list.dirs(surveys_directory, full.names = TRUE, recursive = FALSE)
   surveys <- list()
   for (survey_directory in survey_directories) {
@@ -317,7 +337,7 @@ read_appkit_surveys <- function(surveys_directory) {
       sub("\\.csv$", "", .) %>%
       sub(" ", "_", .)
 
-    survey_data <- read_appkit_survey(survey_directory)
+    survey_data <- read_appkit_survey(survey_directory,  na_value=na_value)
     surveys[[survey_name]] <- survey_data
   }
   return(surveys)

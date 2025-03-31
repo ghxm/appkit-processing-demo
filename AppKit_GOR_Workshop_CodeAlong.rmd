@@ -111,7 +111,7 @@ With the helper functions loaded, we can go ahead and use them to import the dat
 The data are being read from the `data` folder. The `read_appkit_surveys()` function will automatically read all `.csv` files in the specified folder and combine them into a single data frame. The resulting data frame will contain all the survey responses, including the metadata (e.g., participant ID, survey ID, etc.) and the actual survey responses.
 
 ```{r}
-surveys <- read_appkit_surveys('data')
+surveys <- read_appkit_surveys('data', na_value = -1)
 ```
 
 Let's take a look at the survey contained in the `surveys` list.
@@ -270,7 +270,7 @@ ggplot(entry, aes(x = age)) +
 
 ```
 
-Looks like we're covering quite a bit of ground!
+Looks like we're covering quite a bit of ground! Maybe a bit too much.
 
 <br>
 
