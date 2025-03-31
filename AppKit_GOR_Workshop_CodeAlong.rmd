@@ -23,12 +23,11 @@ output:
 
 <br>
 
---------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------
 
-<div class="alert alert-warning">
-  <strong>Note:</strong> if you open this notebook in an IDE like RStudio, please make sure to set the working directory to the folder where this notebook is located. Otherwise, the code will not work as intended.
-</div>
-
+::: {.alert .alert-warning}
+<strong>Note:</strong> if you open this notebook in an IDE like RStudio, please make sure to set the working directory to the folder where this notebook is located. Otherwise, the code will not work as intended.
+:::
 
 # Purpose of this notebook
 
@@ -38,7 +37,7 @@ The main goal of this notebook is to make the user familiar with importing, clea
 
 The notebook is not intended to be a comprehensive guide to smartphone survey data analysis, but rather a starting point for further exploration and analysis. For any further statistical analysis of intensive longitudinal data analysis, make sure to check out the [2 day GESIS workshop](https://training.gesis.org/?site=pDetails&pID=0xF164B5C6C3B04137B4AE56919A2A6EA4) by Dr. Lukas Otto.
 
---------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 <br><br><br>
 
@@ -46,19 +45,19 @@ The notebook is not intended to be a comprehensive guide to smartphone survey da
 
 The demo study in this notebook is intended to replicate the findings of the study by [Barrett et al. (2010)](https://doi.org/10.1080/026999398379565) on emotionality and social interaction, which looks at the self-reported emotionality of individuals and differences between men and women. The study's main finding:
 
->We predicted and found that sex-related differences in emotion in global self-descriptions, but not in the averaged momentary ratings of emotion.
+> We predicted and found that sex-related differences in emotion in global self-descriptions, but not in the averaged momentary ratings of emotion.
 
 The study consisted of the following survey:
 
-- An entry survey distributed to participants after they logged into the study on the AppKit app.
-- A momentary assessment survey that was sent to participants at 8 random times during the day for a period of 4 days.
-- An exit survey that was distributed to participants after momentary assessment period.
+-   An entry survey distributed to participants after they logged into the study on the AppKit app.
+-   A momentary assessment survey that was sent to participants at 8 random times during the day for a period of 4 days.
+-   An exit survey that was distributed to participants after momentary assessment period.
 
-This notebook employs many examples and code from the [ESM Preprocessing Gallery](https://preprocess.esmtools.com/) -- a great resource maintained by Jordan Revol and colleagues at KU Leuven.
+
 
 You can find more information on the GESIS AppKit and request your own account on the [GESIS AppKit website](http://appkit.gesis.org/). You can also find detailed documentation on how to use the AppKit [here](https://appkit.gesis.org/manual/)
 
---------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 <br><br><br>
 
@@ -126,17 +125,15 @@ As you can see, the `surveys` list contains three surveys. The first one contain
 
 To make things easier, let's assign the surveys to their own objects:
 
-
 ```{r}
 entry <- surveys$entry_survey
 ma <- surveys$momentary_assessment
 exit <- surveys$exit_survey
 ```
 
-Let's inspect each of the surveys in turn.
-We will start with the entry survey.
+Let's inspect each of the surveys in turn. We will start with the entry survey.
 
---------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 <br><br><br>
 
@@ -152,13 +149,13 @@ We can see that the entry survey contains `r NROW(entry)` rows and `r NCOL(entry
 
 The first few variables contain metadata on the participant and their device:
 
-- `personalParticipantCode` Used to identify the participant in the study.
-- `generalLoginCode` Stores the general login code shared among participants to participate in the study.
-- `committed` Timestamp indicating when the participant's response was committed.
-- `scheduled` Timestamp indicating when the survey was scheduled for the participant.
-- `published` Timestamp indicating when the survey was set to published in the AppKit backend.
-- `osVersion` Holds information about the participant's operating system version.
-- `smartphoneType` Describes the participant's smartphone or device type
+-   `personalParticipantCode` Used to identify the participant in the study.
+-   `generalLoginCode` Stores the general login code shared among participants to participate in the study.
+-   `committed` Timestamp indicating when the participant's response was committed.
+-   `scheduled` Timestamp indicating when the survey was scheduled for the participant.
+-   `published` Timestamp indicating when the survey was set to published in the AppKit backend.
+-   `osVersion` Holds information about the participant's operating system version.
+-   `smartphoneType` Describes the participant's smartphone or device type
 
 We can use this metadata to get an overview of who participated in your study on what devices.
 
@@ -194,8 +191,7 @@ ggplot(entry, aes(x = osVersion)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-We can also check the distribution of operating systems across different smartphone types because people using the 
-same smartphone do not necessarily use the same operating system.
+We can also check the distribution of operating systems across different smartphone types because people using the same smartphone do not necessarily use the same operating system.
 
 ```{r}
 ggplot(entry, aes(x = osVersion, fill = smartphoneType)) +
@@ -336,9 +332,9 @@ entry$aim_score <- aim_score
 
 Now that we do have an overall score, we can check out some basic plots and differences
 
-<div class="alert alert-warning">
-  <strong>Note:</strong> Please keep in mind that the test data set we're working with has < 10 respondents to give a good overview of the processing steps. The resulting plots and statistics will thus look a bit wonky and are in no way scientifically valid.
-</div>
+::: {.alert .alert-warning}
+<strong>Note:</strong> Please keep in mind that the test data set we're working with has \< 10 respondents to give a good overview of the processing steps. The resulting plots and statistics will thus look a bit wonky and are in no way scientifically valid.
+:::
 
 <br>
 
@@ -396,7 +392,7 @@ ggplot(entry, aes(x = age, y = aim_score)) +
 
 ```
 
---------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 <br><br><br>
 
@@ -414,7 +410,7 @@ Let's start by examining the "main part" of our survey, the momentary assessment
 explore_vars(ma)
 ```
 
-As you can see, participants were asked about their interactions with others throughout the day and how they felt about them. 
+As you can see, participants were asked about their interactions with others throughout the day and how they felt about them.
 
 You can also see that the data structure is different from the entry survey. While the entry dataframe had one row per participant, the momentary assessment dataframe has multiple rows per participant. Lets check this
 
@@ -462,7 +458,6 @@ ma %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
-
 
 Since the surveys were sent out at random, let's check when the surveys were sent and how long it took participants to respond.
 
@@ -577,7 +572,7 @@ ma %>%
 On average, took participants `r round(mean(ma$time_diff/60/60, na.rm = TRUE), 2)` hours to respond to the surveys. The median time difference is `r round(median(ma$time_diff/60/60, na.rm = TRUE), 2)` hours. The maximum time difference is `r round(max(ma$time_diff/60/60, na.rm = TRUE), 2)` hours and the fastest response time was `r round(min(ma$time_diff, na.rm = TRUE), 2)` seconds.
 
 We can also check the self-indicated time difference of participants from the reported social interaction and answering the survey
- 
+
 ```{r}
 # delay
 #table(ma_subset$personalParticipantCode, ma_subset$delay)
@@ -665,7 +660,6 @@ ggplot(ma_subset, aes(x = personalParticipantCode, fill = dataquality)) +
 ma_subset <- ma_subset[ma_subset$dataquality == "I have answered the questions conscientiously",]
 ```
 
- 
 ```{r}
 # assigning correct NAs to description
 ma_subset$description[nchar(ma_subset$description) <= 3] <- NA
@@ -729,8 +723,8 @@ ma_subset[ma_subset$groupsize <= 30,] %>%
 
 ```
 
- Lets also check the reported duration of interactions
-  
+Lets also check the reported duration of interactions
+
 ```{r}
 # duration
 #table(ma_subset$personalParticipantCode, ma_subset$duration)
@@ -749,9 +743,9 @@ ggplot(ma_subset, aes(x = personalParticipantCode, fill = duration)) +
 <br>
 
 ## Emotionality
- 
+
 Before we can now have a look at the reported emotional impact of the interactions, we still have to format missing values.
- 
+
 ```{r}
 # formatting non-responses
 for (i in seq_along(ma_subset[,14:25])) {
@@ -794,7 +788,7 @@ ma_subset %>%
   theme(legend.position = "none")
  
 ```
-  
+
 ```{r, warning=FALSE}
 # Emotionality Features
 summary_by_ppt <- ma_subset %>%
@@ -839,7 +833,7 @@ ma_subset %>%
 
 ```
 
---------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 <br><br><br>
 
@@ -847,7 +841,7 @@ ma_subset %>%
 
 The question we wanted to investigate / replicate was based on this finding
 
->We predicted and found that sex-related differences in emotion in global self-descriptions, but not in the averaged momentary ratings of emotion.
+> We predicted and found that sex-related differences in emotion in global self-descriptions, but not in the averaged momentary ratings of emotion.
 
 After having explored both the global ratings of emotional intensity and the in-situ ratings of emotional intensity for social interactions, we can look at them in combination. To do so, we first need to combine the information from the entry survey (`gender`,`AIM score`) with the information from the momentary assessment (`interaction_intensity`).
 
@@ -929,9 +923,9 @@ We have a nested structure of in-situ measurements with surveys nested in days, 
 
 To compare male and female participants we need to aggregate the in-situ measurements to the participant level. We can do this by calculating the mean (or median) of the `interaction_intensity` for each participant and then averaging over the averages to generate overall scores.
 
-<div class="alert alert-warning">
-  <strong>Note:</strong> The better option to check data like these are true multilevel modelling approaches. However, these do not make sense with our N < 10 toy example. To learn about these, feel free to check out our upcoming [2 day GESIS workshop](https://training.gesis.org/?site=pDetails&pID=0xF164B5C6C3B04137B4AE56919A2A6EA4)
-</div>
+::: {.alert .alert-warning}
+<strong>Note:</strong> The better option to check data like these are true multilevel modelling approaches. However, these do not make sense with our N \< 10 toy example. To learn about these, feel free to check out our upcoming [2 day GESIS workshop](https://training.gesis.org/?site=pDetails&pID=0xF164B5C6C3B04137B4AE56919A2A6EA4)
+:::
 
 ![](./images/Screenshot2.png)
 
@@ -979,3 +973,8 @@ ggplot(participant_summary, aes(x = gender, y = mean_interaction_intensity, fill
   ) +
   theme_minimal()
 ```
+
+
+## Other resources
+
+- The [ESM Preprocessing Gallery](https://preprocess.esmtools.com/) is a great resource for code snippets for working with momentary assessment data maintained by Jordan Revol and colleagues at KU Leuven.
