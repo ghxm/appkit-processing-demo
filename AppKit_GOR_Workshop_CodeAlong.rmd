@@ -119,6 +119,7 @@ Let's take a look at the survey contained in the `surveys` list.
 ```{r}
 # Check the names of the surveys
 names(surveys)
+
 ```
 
 As you can see, the `surveys` list contains three surveys. The first one contains the momentary assessment surveys for each participant, while the second and third ones are the pre- and post-surveys, entry and exit surveys, respectively.
