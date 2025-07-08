@@ -1,39 +1,11 @@
 # GESIS AppKit data export processing demo
 
-This repository contains a demo for processing GESIS AppKit data exports in R. The demo includes code to read, clean, and analyze survey data exported from the GESIS AppKit. The main content can be found in 
+This repository contains a demo notebook for processing GESIS AppKit data exports in R. The demo includes code to read, clean, and analyze survey data exported from the GESIS AppKit. The main content can be found in `appkit_data_processing_demo.Rmd`.
 
+## Preqrequisites
 
-## Setup for Code-along
-
-To prepare for the code-along part of the workshop in advance, you can already install all required packages in R / RStudio:
-
-```
-# List of required packages
-packages <- c("ggplot2",
-              "anytime",
-              "dplyr",
-              "psych",
-              "corrplot",
-              "cli",
-              "lubridate",
-              "tidyverse",
-              "ggpubr")
-
-# Check if each package is installed and install if missing
-for (package in packages) {
-  if (!require(package, character.only = TRUE, quietly = TRUE)) {
-    message(paste("Installing package:", package))
-    install.packages(package, repos = "https://cloud.r-project.org/")
-    library(package, character.only = TRUE)
-  } else {
-    message(paste("Package", package, "is already loaded"))
-  }
-}
-
-message("All required packages are now installed and loaded")
-
-```
-
+- installed `R` environment on your computer (e.g. RStudio)
+- basic R, tidyverse & ggplot knowledge
 
 ## Additional Materials
 
