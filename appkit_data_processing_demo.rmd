@@ -52,7 +52,6 @@ The study consisted of the following survey:
 -   A momentary assessment survey that was sent to participants at 8 random times during the day for a period of 4 days.
 -   An exit survey that was distributed to participants after momentary assessment period.
 
-
 You can find more information on the GESIS AppKit and request your own account on the [GESIS AppKit website](http://appkit.gesis.org/). You can also find detailed documentation on how to use the AppKit [here](https://appkit.gesis.org/manual/)
 
 ------------------------------------------------------------------------
@@ -76,7 +75,8 @@ packages <- c("ggplot2",
               "cli",
               "lubridate",
               "tidyverse",
-              "ggpubr")
+              "ggpubr",
+              "withr")
 
 # Check if each package is installed and install if missing
 for (package in packages) {
@@ -170,7 +170,6 @@ Looks like we have 2 users on recent versions of Android and 5 iPhone users on i
 
 We can, of course, also visualize this information. Let's create a bar plot showing the number of participants per smartphone type and operating system version.
 
-
 ```{r}
 ggplot(entry, aes(x = osVersion, fill = smartphoneType)) +
   geom_bar(position = "dodge") +
@@ -236,7 +235,7 @@ Looks like we're covering quite a bit of ground!
 
 <br>
 
-## Affect Intensitiy Measure (AIM)
+## Affect Intensity Measure (AIM)
 
 In the entry survey, we are administering the 20-item version of the [Affect Intensitiy Measure (AIM)](https://labs.psychology.illinois.edu/~ediener/AIM.html). The AIM scale is a self-report measure of the intensity of emotional experience. Participants are asked to rate the intensity of their emotional experience on a 7-point Likert-scale ranging from 1 (never) to 7 (always). The AIM scale consists of 20 items, the 10 items representing low emotional intensity are reverse-coded.
 
@@ -301,7 +300,6 @@ table(entry$aim_score, entry$gender, useNA = "always")
 ```
 
 Unfortunately, some participants did not answer all AIM items, which results in `NA` values in the AIM score, so we're back to one `female` participant.
-
 
 Now that we do have an overall score, we can check out some basic plots and differences.
 
@@ -371,16 +369,13 @@ ggplot(entry, aes(x = age, y = aim_score)) +
 
 # Momentary Assessment Survey
 
-
 ::: {.alert .alert-warning}
 <strong>Note:</strong> Some of the plots in this and the following sections will not scale to real life studies with hundreds of participants, but are intended for illustrative purposes of the data and its structure in this particular data example.
 :::
 
-
 ## Data Quality
 
 With our insights from the entry survey in mind, we can dive into some descriptive analysis of our momentary assessment survey.
-
 
 Let's start by examining the "main part" of our survey, the momentary assessment survey. We will start by looking at the variables contained in the survey. For this we will use the `explore_vars()` function from our AppKit helpers file again.
 
@@ -403,8 +398,6 @@ Before we begin in with a more detailed analysis of the survey contents, let's a
 ::: {.alert .alert-warning}
 <strong>Note:</strong> The survey datasets contain only committed responses, meaning that only the surveys that were actually answered by the participants are included in the dataset. This means that we can only count the number of surveys that were answered, not the number of surveys that were scheduled. Please note that this behavior might change in future version of the AppKit.
 :::
-
-
 
 ```{r}
 # Create a table of scheduled and committed surveys per participant
@@ -451,12 +444,14 @@ First, let's visualize when the surveys were sent out. We will use the `schedule
 ```{r}
 # Convert the time variables to POSIXct
 
+
+# convert to time variables (note: with_locale is required here to ensure consistent parsing across locales!)
 ma <- ma %>%
-  # Convert timestamps to POSIXct and create a numeric participant index.
   mutate(
-    scheduled = as.POSIXct(scheduled, format = "%d-%b-%Y %H:%M:%S"),
-    committed = as.POSIXct(committed, format = "%d-%b-%Y %H:%M:%S"),
-    published = as.POSIXct(published, format = "%d-%b-%Y %H:%M:%S"))
+    scheduled = withr::with_locale(c("LC_TIME" = "C"), as.POSIXct(scheduled, format = "%d-%b-%Y %H:%M:%S")),
+    committed = withr::with_locale(c("LC_TIME" = "C"), as.POSIXct(committed, format = "%d-%b-%Y %H:%M:%S")),
+    published = withr::with_locale(c("LC_TIME" = "C"), as.POSIXct(published, format = "%d-%b-%Y %H:%M:%S"))
+  )
 
 
 # Create a histogram of the scheduled times
@@ -493,6 +488,7 @@ ma %>%
     ppt_index = as.numeric(personalParticipantCode)
   ) %>%
   distinct(personalParticipantCode, ppt_index) -> ppt_map
+
 
 ma %>%
   mutate(
@@ -635,7 +631,6 @@ One person seemed to be on a different page, so let's remove these answers from 
 ma_interaction <- ma_interaction[ma_interaction$dataquality == "I have answered the questions conscientiously",]
 ```
 
-
 <br>
 
 ## Interactions
@@ -721,6 +716,11 @@ ggplot(ma_interaction, aes(x = personalParticipantCode, fill = duration)) +
 ```
 
 <br>
+
+
+
+
+
 
 ## Emotionality
 
@@ -817,11 +817,17 @@ ma_interaction %>%
 
 <br><br><br>
 
+
+
+
+
 # Answering our research question
 
 The question we wanted to investigate / replicate was based on this finding
 
+
 > We predicted and found that sex-related differences in emotion in global self-descriptions, but not in the averaged momentary ratings of emotion.
+
 
 After having explored both the global ratings of emotional intensity and the in-situ ratings of emotional intensity for social interactions, we can look at them in combination. To do so, we first need to combine the information from the entry survey (`gender`,`AIM score`) with the information from the momentary assessment (`interaction_intensity`).
 
@@ -852,7 +858,6 @@ emotionality_study <- ma %>%
 
 
 ```
-
 
 <br>
 
@@ -901,9 +906,13 @@ ggplot(emotionality_study, aes(x = gender, y = as.numeric(interaction_intensity)
   theme_minimal()
 ```
 
+
+
 Note that we have a nested structure of in-situ measurements with surveys nested in days, days nested in participants and participants nested in gender.
 
 To compare male and female participants we need to aggregate the in-situ measurements to the participant level. We can do this by calculating the mean (or median) of the `interaction_intensity` for each participant and then averaging over the averages to generate overall scores.
+
+
 
 ![](./images/Screenshot2.png)
 
@@ -914,6 +923,8 @@ To compare male and female participants we need to aggregate the in-situ measure
 
 
 In order to compare participants, we will create a summary dataframe that contains the mean interaction intensity (the momentary measurement) for each participant.
+
+
 
 ```{r}
 participant_summary <- emotionality_study %>%
@@ -929,7 +940,10 @@ participant_summary <- emotionality_study %>%
 participant_summary
 ```
 
+
 Let's check the overall correlation between AIM and in-situ interaction intensitiy.
+
+
 
 ```{r, warning=FALSE, message = F}
 ggplot(participant_summary, aes(x = aim_score, y = mean_interaction_intensity)) +
@@ -944,9 +958,12 @@ ggplot(participant_summary, aes(x = aim_score, y = mean_interaction_intensity)) 
   theme_minimal()
 ```
 
-The correlation between the AIM score and the mean interaction intensity is `r round(cor(participant_summary$aim_score, participant_summary$mean_interaction_intensity, use = "complete.obs"), 2)`, indicating a negative relationship between the two measures. The higher the AIM score, the lower the mean interaction intensity. This is in line with the findings of the original study. However, we we can also see that the correlation is not significant, which means that we cannot conclude that there is a relationship between the two measures in our very small sample with only one participants identifying as `female`.
+
+The correlation coefficient between the AIM score and the mean interaction intensity is `r round(cor(participant_summary$aim_score, participant_summary$mean_interaction_intensity, use = "complete.obs"), 2)`, indicating a negative relationship between the two measures. The higher the AIM score, the lower the mean interaction intensity. However, we we can also see that the correlation coefficient is not significant, which means that we cannot conclude that there is a relationship between the two measures in our very small sample with only one participants identifying as `female`.
+
 
 And finally, let's check the gender differences based on aggregated in-situ measurements.
+
 
 ```{r}
 ggplot(participant_summary, aes(x = gender, y = mean_interaction_intensity, fill = gender)) +
@@ -960,10 +977,15 @@ ggplot(participant_summary, aes(x = gender, y = mean_interaction_intensity, fill
   theme_minimal()
 ```
 
+
+
 We can see that the differences in the mean interaction intensity between participants that we observed in the entry survey vanish in the momentary measure. This is in line with the findings of the original study, which found that there are no significant differences in the momentary ratings of emotion between participants with different genders.
+
+
+
 
 
 # Other resources
 
-- The [ESM Preprocessing Gallery](https://preprocess.esmtools.com/) is a great resource for code snippets for working with momentary assessment data maintained by Jordan Revol and colleagues at KU Leuven.
-- Watch out for the `appkit` R package, which is currently in development and will provide a more convenient way to work with AppKit data in R.
+-   The [ESM Preprocessing Gallery](https://preprocess.esmtools.com/) is a great resource for code snippets for working with momentary assessment data maintained by Jordan Revol and colleagues at KU Leuven.
+-   Watch out for the `appkit` R package, which is currently in development and will provide a more convenient way to work with AppKit data in R.
