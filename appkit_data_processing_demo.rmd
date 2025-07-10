@@ -903,15 +903,15 @@ ggplot(emotionality_study, aes(x = gender, y = as.numeric(interaction_intensity)
 
 Note that we have a nested structure of in-situ measurements with surveys nested in days, days nested in participants and participants nested in gender.
 
-![](./images/Screenshot.png)
-
 To compare male and female participants we need to aggregate the in-situ measurements to the participant level. We can do this by calculating the mean (or median) of the `interaction_intensity` for each participant and then averaging over the averages to generate overall scores.
+
+![](./images/Screenshot2.png)
 
 ::: {.alert .alert-warning}
 <strong>Note:</strong> The better option to check data like these are true multilevel modeling approaches. However, these do not make sense with our small demo example.
 :::
 
-![](./images/Screenshot2.png)
+
 
 In order to compare participants, we will create a summary dataframe that contains the mean interaction intensity (the momentary measurement) for each participant.
 
