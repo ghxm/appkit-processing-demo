@@ -25,15 +25,8 @@ output:
 ------------------------------------------------------------------------
 
 ::: {.alert .alert-warning}
-
-
 <strong>Note:</strong> if you open this notebook in an IDE like RStudio, please make sure to set the working directory to the folder where this notebook is located. Otherwise, the code will not work as intended.
 :::
-
-
-
-
-
 
 # Purpose of this notebook
 
@@ -46,12 +39,6 @@ The notebook is not intended to be a comprehensive guide to smartphone survey da
 ------------------------------------------------------------------------
 
 <br><br><br>
-
-
-
-
-
-
 
 # Introduction
 
@@ -71,24 +58,13 @@ You can find more information on the GESIS AppKit and request your own account o
 
 <br><br><br>
 
-
-
-
-
-
-
 # Data processing
-
-
-
 
 ## Setup
 
 In order to run the code in this notebook, you need to install and load the following packages:
 
-
-
-```{r, include=TRUE, echo=TRUE, output=FALSE, message=FALSE}
+```{r, include=TRUE, echo=TRUE, output=FALSE, message=TRUE}
 
 
 
@@ -126,11 +102,7 @@ message("All required packages are now installed and loaded")
 
 ```
 
-
-
 We will also load some convenience functions tailored to working with AppKit data. If you want to check out the code, you can find it in the `appkit_helpers.R` file.
-
-
 
 ```{r, include=TRUE, echo=TRUE, message=FALSE}
 
@@ -142,18 +114,11 @@ source("appkit_helpers.R")
 
 ```
 
-
-
-
-
-
 ## Importing and auto-formatting data
 
 With the helper functions loaded, we can go ahead and use them to import the data.
 
 The data are being read from the `data` folder. The `read_appkit_surveys()` function will automatically read all `.csv` files in the specified folder and combine them into a single data frame. The resulting data frame will contain all the survey responses, including the metadata (e.g., participant ID, survey ID, etc.) and the actual survey responses.
-
-
 
 ```{r}
 
@@ -163,11 +128,7 @@ surveys <- read_appkit_surveys('data', na_value = -1)
 
 ```
 
-
-
 Let's take a look at the survey contained in the `surveys` list.
-
-
 
 ```{r}
 
@@ -179,13 +140,9 @@ names(surveys)
 
 ```
 
-
-
 As you can see, the `surveys` list contains three surveys. The first one contains the momentary assessment surveys for each participant, while the second and third ones are the pre- and post-surveys, entry and exit surveys, respectively.
 
 To make things easier, let's assign the surveys to their own objects:
-
-
 
 ```{r}
 
@@ -197,24 +154,15 @@ exit <- surveys$exit_survey
 
 ```
 
-
-
 Let's inspect each of the surveys in turn. We will start with the entry survey.
 
 ------------------------------------------------------------------------
 
 <br><br><br>
 
-
-
-
-
-
 # Entry Survey
 
 Let's check the contained variables first.
-
-
 
 ```{r}
 
@@ -223,8 +171,6 @@ glimpse(entry)
 
 
 ```
-
-
 
 We can see that the entry survey contains `r NROW(entry)` rows and `r NCOL(entry)` columns. This indicates that there are `r NROW(entry)` participants and `r NCOL(entry)` questions in the entry survey.
 
@@ -242,12 +188,7 @@ We can use this metadata to get an overview of who participated in your study on
 
 <br>
 
-
-
-
 ## Devices and Operating Systems
-
-
 
 ```{r}
 
@@ -257,13 +198,9 @@ table(entry$osVersion, entry$smartphoneType, useNA = "always")
 
 ```
 
-
-
 Looks like we have 2 users on recent versions of Android and 5 iPhone users on iOS 18.3.1. Luckily, we have no hackers running Android on their iPhones in our sample.
 
 We can, of course, also visualize this information. Let's create a bar plot showing the number of participants per smartphone type and operating system version.
-
-
 
 ```{r}
 
@@ -281,11 +218,7 @@ ggplot(entry, aes(x = osVersion, fill = smartphoneType)) +
 
 ```
 
-
-
 Now that we've established our participants' mobile computing environment, let's take a look at the other variables contained in our entry survey. For this we will rely on a function from our AppKit helpers file.
-
-
 
 ```{r}
 
@@ -295,20 +228,13 @@ explore_vars(entry)
 
 ```
 
-
-
 We can see that each variable has an assigned label as well as value labels for the response options.
 
 Before we dive in deeper, let's get a good overview of our sample, let's look at some demographics, starting with sex and gender.
 
 <br>
 
-
-
-
 ## Demographics
-
-
 
 ```{r}
 
@@ -325,13 +251,9 @@ table(entry$gender, entry$sex, useNA = "always")
 
 ```
 
-
-
 In light of the small sample size, let's roll with `gender` as our main variable of interest.
 
 How old are our participants? Let's take a look at the age distribution.
-
-
 
 ```{r}
 
@@ -357,22 +279,15 @@ ggplot(entry, aes(x = age)) +
 
 ```
 
-
-
 Looks like we're covering quite a bit of ground!
 
 <br>
-
-
-
 
 ## Affect Intensity Measure (AIM)
 
 In the entry survey, we are administering the 20-item version of the [Affect Intensitiy Measure (AIM)](https://labs.psychology.illinois.edu/~ediener/AIM.html). The AIM scale is a self-report measure of the intensity of emotional experience. Participants are asked to rate the intensity of their emotional experience on a 7-point Likert-scale ranging from 1 (never) to 7 (always). The AIM scale consists of 20 items, the 10 items representing low emotional intensity are reverse-coded.
 
 First, lets have a look at the data.
-
-
 
 ```{r}
 
@@ -384,11 +299,7 @@ entry[,8:27]
 
 ```
 
-
-
 Let's check which questions need to be reverse coded.
-
-
 
 ```{r}
 
@@ -406,11 +317,7 @@ sapply(aim_data, function(x) attr(x, "label"))
 
 ```
 
-
-
 As we can see from, we need to reverse code the following items: `1, 4, 6, 11, 12, 13, 14, 15, 17, 20`. Let's take a look at the data again for these variables and recode them
-
-
 
 ```{r}
 
@@ -433,11 +340,7 @@ for (item in reverse_items) {
 
 ```
 
-
-
 Now that we have reverse-coded the correct items, we can calculate the overall sum score for the AIM scale.
-
-
 
 ```{r}
 
@@ -452,11 +355,7 @@ entry$aim_score <- aim_score
 
 ```
 
-
-
 Let's take a look at the overall AIM score.
-
-
 
 ```{r}
 
@@ -470,26 +369,17 @@ table(entry$aim_score, entry$gender, useNA = "always")
 
 ```
 
-
-
 Unfortunately, some participants did not answer all AIM items, which results in `NA` values in the AIM score, so we're back to one `female` participant.
 
 Now that we do have an overall score, we can check out some basic plots and differences.
 
 ::: {.alert .alert-warning}
-
-
 <strong>Note:</strong> Please keep in mind that the test data set we're working with has \< 10 respondents to give a good overview of the processing steps. The resulting plots and statistics will thus look a bit wonky and are in no way scientifically valid.
 :::
 
 <br>
 
-
-
-
 ### AIM by Gender
-
-
 
 ```{r, warning=FALSE}
 
@@ -509,16 +399,9 @@ ggplot(entry, aes(x = gender, y = aim_score, fill = gender)) +
 
 ```
 
-
-
 <br>
 
-
-
-
 ### AIM by Sex
-
-
 
 ```{r, warning=FALSE}
 
@@ -539,16 +422,9 @@ ggplot(entry, aes(x = sex, y = aim_score, fill = sex)) +
 
 ```
 
-
-
 <br>
 
-
-
-
 ### AIM by Age
-
-
 
 ```{r, warning=FALSE}
 
@@ -569,34 +445,21 @@ ggplot(entry, aes(x = age, y = aim_score)) +
 
 ```
 
-
-
 ------------------------------------------------------------------------
 
 <br><br><br>
 
-
-
-
-
 # Momentary Assessment Survey
 
 ::: {.alert .alert-warning}
-
-
 <strong>Note:</strong> Some of the plots in this and the following sections will not scale to real life studies with hundreds of participants, but are intended for illustrative purposes of the data and its structure in this particular data example.
 :::
-
-
-
 
 ## Data Quality
 
 With our insights from the entry survey in mind, we can dive into some descriptive analysis of our momentary assessment survey.
 
 Let's start by examining the "main part" of our survey, the momentary assessment survey. We will start by looking at the variables contained in the survey. For this we will use the `explore_vars()` function from our AppKit helpers file again.
-
-
 
 ```{r}
 
@@ -606,13 +469,9 @@ explore_vars(ma)
 
 ```
 
-
-
 As you can see, participants were asked about their interactions with others throughout the day and how they felt about them.
 
 You can also see that the data structure is different from the entry survey. While the entry dataframe had one row per participant, the momentary assessment dataframe has multiple rows per participant. Lets check this
-
-
 
 ```{r}
 
@@ -622,19 +481,13 @@ table(ma$personalParticipantCode, useNA = "always")
 
 ```
 
-
-
 We can see that we have a different number of rows per participant, one for each survey that the participant completed. This is because the same momentary assessment survey was sent out at *multiple* random times throughout the day.
 
 Before we begin in with a more detailed analysis of the survey contents, let's assess how many of our participants actually completed the surveys. We know that each participant received 8 surveys per day over a period of 4 days, totaling 32 surveys. We can use the `personalParticipantCode` variable to group the data by participant and then count the number of surveys each participant completed.
 
 ::: {.alert .alert-warning}
-
-
 <strong>Note:</strong> The survey datasets contain only committed responses, meaning that only the surveys that were actually answered by the participants are included in the dataset. This means that we can only count the number of surveys that were answered, not the number of surveys that were scheduled. Please note that this behavior might change in future version of the AppKit.
 :::
-
-
 
 ```{r}
 
@@ -656,11 +509,7 @@ ma %>%
 
 ```
 
-
-
 We can also visualize the completion of the surveys by day to check if the compliance rate was constant or decreased over time. Keep in mind that not all participants started their 4-day survey window on the same day!
-
-
 
 ```{r, fig.height=20, fig.width=8, warning=FALSE, message=FALSE}
 
@@ -686,13 +535,9 @@ ma %>%
 
 ```
 
-
-
 Since the surveys were sent out at random, let's check when the surveys were sent and how long it took participants to respond.
 
 First, let's visualize when the surveys were sent out. We will use the `scheduled` variable to plot the distribution of survey times.
-
-
 
 ```{r}
 
@@ -732,11 +577,7 @@ ggplot(ma, aes(x = committed)) +
 
 ```
 
-
-
 Seems like the distribution of scheduled and committed times is fairly similar, but we can't really tell from these plots, maybe we need a more advanced graphical representation.
-
-
 
 ```{r}
 
@@ -791,11 +632,7 @@ ma %>%
 
 ```
 
-
-
 We can also calculate time between the scheduled and committed times. This will give us a pretty good idea of how long it took participants to respond to the surveys on average.
-
-
 
 ```{r}
 
@@ -823,13 +660,9 @@ ma %>%
 
 ```
 
-
-
 On average, took participants `r round(mean(ma$time_diff/60/60, na.rm = TRUE), 2)` hours to respond to the surveys. The median time difference is `r round(median(ma$time_diff/60/60, na.rm = TRUE), 2)` hours. The maximum time difference is `r round(max(ma$time_diff/60/60, na.rm = TRUE), 2)` hours and the fastest response time was `r round(min(ma$time_diff, na.rm = TRUE), 2)` seconds.
 
 We can also check the self-indicated time difference of participants from the reported social interaction and answering the survey
-
-
 
 ```{r}
 
@@ -851,11 +684,7 @@ ggplot(ma, aes(x = personalParticipantCode, fill = delay)) +
 
 ```
 
-
-
 Yet, not all responses that were commited include a personal interaction and not all answers were given conscientiously. We can check how many interactions we can analyze by contrasting the `dataquality` variable, which indicates whether the response was given conscientiously, with the `screening` variable, which indicates whether the participant had an interaction with someone else.
-
-
 
 ```{r}
 
@@ -872,11 +701,7 @@ ma %>%
 
 ```
 
-
-
 As a last check, we can explore during what time of the day participants were most likely to respond to the surveys. We can do this by extracting the hour from the `committed` variable and plotting the distribution of responses.
-
-
 
 ```{r}
 
@@ -899,20 +724,13 @@ ggplot(aes(x = committed_hour)) +
 
 ```
 
-
-
 Let's check the emotionality of interactions from the `ma` dataframe.
 
 <br>
 
-
-
-
 ## Removing Data
 
 First, let's reduce the dataframe to the instances where people actually reported on a social interaction and were people indicated to answer the questions conscientiously.
-
-
 
 ```{r}
 
@@ -925,10 +743,6 @@ ma_interaction <- ma %>%
 
 ```
 
-
-
-
-
 ```{r, fig.width= 12}
 
 
@@ -940,11 +754,7 @@ table(ma_interaction$dataquality, ma_interaction$personalParticipantCode)
 
 ```
 
-
-
 One person seemed to be on a different page, so let's remove these answers from the dataset. We will also remove all other non-conscientious answers, as we are only interested in the conscientious responses.
-
-
 
 ```{r}
 
@@ -955,18 +765,11 @@ ma_interaction <- ma_interaction[ma_interaction$dataquality == "I have answered 
 
 ```
 
-
-
 <br>
-
-
-
 
 ## Interactions
 
 Let's first have a look at what kind of interactions participants report on with respect to group sizes and interaction partner gender.
-
-
 
 ```{r}
 
@@ -988,10 +791,6 @@ ggplot(ma_interaction, aes(x = personalParticipantCode, fill = partner_gender)) 
 
 
 ```
-
-
-
-
 
 ```{r}
 
@@ -1015,11 +814,7 @@ ma_interaction %>%
 
 ```
 
-
-
 Seems like one person was in a group of 35000 people, which is quite a lot. Let's check the description of this interaction to see if it was a mistake or an actual interaction.
-
-
 
 ```{r}
 
@@ -1029,11 +824,7 @@ ma_interaction$description[ma_interaction$groupsize > 1000]
 
 ```
 
-
-
 Aha, they were in a stadium with 35000 people, so this is actually a valid interaction. Let's keep it in the dataset, but we can still remove the outliers for the boxplot to get a better overview of the group sizes.
-
-
 
 ```{r}
 
@@ -1056,11 +847,7 @@ ma_interaction[ma_interaction$groupsize <= 30,] %>%
 
 ```
 
-
-
 Lets also check the reported duration of interactions.
-
-
 
 ```{r}
 
@@ -1082,23 +869,11 @@ ggplot(ma_interaction, aes(x = personalParticipantCode, fill = duration)) +
 
 ```
 
-
-
 <br>
-
-
-
-
-
-
-
-
 
 ## Emotionality
 
 Before we can now have a look at the reported emotional impact of the interactions, we still have to format missing values.
-
-
 
 ```{r}
 
@@ -1111,11 +886,7 @@ ma_interaction <- ma_interaction %>%
 
 ```
 
-
-
 Finally, let's check the emotionality of reported social interactions!
-
-
 
 ```{r, warning=FALSE}
 
@@ -1154,10 +925,6 @@ ma_interaction %>%
 
 
 ```
-
-
-
-
 
 ```{r, warning=FALSE}
 
@@ -1207,27 +974,17 @@ ma_interaction %>%
 
 ```
 
-
-
 ------------------------------------------------------------------------
 
 <br><br><br>
-
-
-
-
 
 # Answering our research question
 
 The question we wanted to investigate / replicate was based on this finding
 
-
 > We predicted and found that sex-related differences in emotion in global self-descriptions, but not in the averaged momentary ratings of emotion.
 
-
 After having explored both the global ratings of emotional intensity and the in-situ ratings of emotional intensity for social interactions, we can look at them in combination. To do so, we first need to combine the information from the entry survey (`gender`,`AIM score`) with the information from the momentary assessment (`interaction_intensity`).
-
-
 
 ```{r}
 
@@ -1261,18 +1018,11 @@ emotionality_study <- ma %>%
 
 ```
 
-
-
 <br>
-
-
-
 
 ## Global Emotional Intensity
 
 First, let's check the 'global' emotional intensity of our participants, as measured by the AIM scale in the entry survey.
-
-
 
 ```{r, warning=FALSE}
 
@@ -1294,20 +1044,13 @@ ggplot(emotionality_study, aes(x = gender,
 
 ```
 
-
-
 As in the original study, we can see that there are differences in the global emotional intensity scores between participants with different gender identities.
 
 <br>
 
-
-
-
 ## In-situ Emotional Intensity
 
 Now, let's check the in-situ emotional intensity of our participants, as measured by the `interaction_intensity` variable in the momentary assessment survey.
-
-
 
 ```{r, warning=FALSE}
 
@@ -1330,31 +1073,17 @@ ggplot(emotionality_study, aes(x = gender, y = as.numeric(interaction_intensity)
 
 ```
 
-
-
-
-
 Note that we have a nested structure of in-situ measurements with surveys nested in days, days nested in participants and participants nested in gender.
 
 To compare male and female participants we need to aggregate the in-situ measurements to the participant level. We can do this by calculating the mean (or median) of the `interaction_intensity` for each participant and then averaging over the averages to generate overall scores.
 
-
-
 ![](./images/Screenshot2.png)
 
 ::: {.alert .alert-warning}
-
-
 <strong>Note:</strong> The better option to check data like these are true multilevel modeling approaches. However, these do not make sense with our small demo example.
 :::
 
-
-
 In order to compare participants, we will create a summary dataframe that contains the mean interaction intensity (the momentary measurement) for each participant.
-
-
-
-
 
 ```{r}
 
@@ -1374,14 +1103,7 @@ participant_summary
 
 ```
 
-
-
-
 Let's check the overall correlation between AIM and in-situ interaction intensitiy.
-
-
-
-
 
 ```{r, warning=FALSE, message = F}
 
@@ -1400,16 +1122,9 @@ ggplot(participant_summary, aes(x = aim_score, y = mean_interaction_intensity)) 
 
 ```
 
-
-
-
 The correlation coefficient between the AIM score and the mean interaction intensity is `r round(cor(participant_summary$aim_score, participant_summary$mean_interaction_intensity, use = "complete.obs"), 2)`, indicating a negative relationship between the two measures. The higher the AIM score, the lower the mean interaction intensity. However, we we can also see that the correlation coefficient is not significant, which means that we cannot conclude that there is a relationship between the two measures in our very small sample with only one participants identifying as `female`.
 
-
 And finally, let's check the gender differences based on aggregated in-situ measurements.
-
-
-
 
 ```{r}
 
@@ -1427,15 +1142,7 @@ ggplot(participant_summary, aes(x = gender, y = mean_interaction_intensity, fill
 
 ```
 
-
-
-
-
 We can see that the differences in the mean interaction intensity between participants that we observed in the entry survey vanish in the momentary measure. This is in line with the findings of the original study, which found that there are no significant differences in the momentary ratings of emotion between participants with different genders.
-
-
-
-
 
 # Other resources
 
